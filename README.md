@@ -25,3 +25,13 @@ For parts of access management
 - Performance Efficiency
 - Cost Optimisation
 
+
+# IAM Limits
+
+- 5000 users per account
+- 10 groups per user
+- 10 managed policies per user
+- 2048 characters for all the inline policies for a user!
+- 2 Access keys for a user (uncluding inactive ones0
+
+)
