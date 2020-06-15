@@ -25,8 +25,6 @@ For parts of access management
 - Performance Efficiency
 - Cost Optimisation
 
-<<<<<<< HEAD
-
 # IAM Limits
 
 - 5000 users per account
@@ -36,10 +34,9 @@ For parts of access management
 - 2 Access keys for a user (uncluding inactive ones0
 
 )
-=======
+
 # Organizations
 
 - The master account cannot be restricted in any way
 - Service Control Policies can be applied to organisation root, and OU or an account
 
->>>>>>> e447307cc47737131d1beed6563a2660c221fbb6
