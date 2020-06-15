@@ -25,3 +25,8 @@ For parts of access management
 - Performance Efficiency
 - Cost Optimisation
 
+# Organizations
+
+- The master account cannot be restricted in any way
+- Service Control Policies can be applied to organisation root, and OU or an account
+
