@@ -40,3 +40,34 @@ For parts of access management
 - The master account cannot be restricted in any way
 - Service Control Policies can be applied to organisation root, and OU or an account
 
+# EC2
+## Instance Families
+
+- General Purpose
+- Compute Optimised
+- Memory optimised
+- Storage Optimised
+- Accelerated Computing
+
+## Storage
+
+- Non-ssd can't be used as boot volume
+- Maximum for a single EBS volume is 64,000 IOPS
+- Maximum for a EC2 instance is 80,000 IOPS of EBS (Instance store gives more)
+
+## Instance Roles
+
+Although the console does it all for you, when you create a role for an instance to assume, you also have to create an instance profile. It is actually the instance profile that is linked to the EC2 instance.
+When you've applied the instance profile, it is available inside the instance via instance metadata.
+
+## Partition Groups
+
+- Cluster Placement Groups - keep instances together, ideally on the same host
+- Partition Placement Group - keep instances apart within AZ, distributing between partitions
+- Spread Placement Group - allows only one instance per partition
+
+## Reservations
+
+- Zonal reservation is for a specific instance size in a specific AZ. Capacity is reserved
+- Regional reservation is for capacity, so applies to all sizes in all AZs. Capacity is not reserved
+
