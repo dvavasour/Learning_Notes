@@ -198,13 +198,14 @@ Alias records can exist at the apex of your domain, CNAME records can't.
 - By default S3 bucket only trusts the owning AWS account
 - IAM policies can grant permissions to roles, users, groups within the same account
 - Explicit deny on IAM policy OR Bucket policy applied first.
-- ACLs are legacy
+- ACLs are legacy - use bucket policy to control access to objects or prefixes
 - Block Public access on bucket overrides object ACLs
 - https://aws.amazon.com/blogs/security/iam-policies-and-bucket-policies-and-acls-oh-my-controlling-access-to-s3-resources/
 
 - Single part upload limited to 5GB
 - Recommend Multipart over 100MB, essential over 5GB
 - aws cli uses multipart by default
+- multipart splits into up to 10,000 parts
 
 ## Encryption
 
@@ -219,3 +220,129 @@ Alias records can exist at the apex of your domain, CNAME records can't.
 	
 Bucket defaults give a default level of encryption if nothing is specified for the object
 Bucket policies can enforce the level/type of encryption allowed
+
+## Website Hosting
+
+- Need to both make bucket public and apply a bucket policy to allow `"*"` to have GET access on objects.
+- CORS: Cross origin Resource Sharing
+
+#### Create a pre-signed URL from the command line
+
+`aws s3 presign s3://<bucketname>/<object-path>`
+
+Need to check on options - expiry times etc.
+
+- Pre-signed URLs are tied to the person who created the, so if their access is removed the pre-signed URL stops working
+- Similarly, if you create a pre-signed URL using a Role, it will expire as soon as the role's credentials are rotated
+
+## Storage Classes
+
+- First byte latency - time from placing a request to when the object start coming to you. Milliseconds for Standard
+- Lifecycle policies in a bucket can be filtered by prefix or tag
+- Lifecycle policies can apply to current version, previous version or both
+- You can define to expire previous versions of objects after a certain time
+- Replication needs versioning on both ends
+- Replication can be filtered by prefix or tag
+- Replication is NOT retrospective, only applies to newly created objects
+- SSE-C objects aren't replicated, SSE-S3 objects are, SSE-KMS not by default, can be enabled
+- SSE-KMS objects are decrypted at source and re-encrypted at destination using a (region specific) KMS key at the destination as specified
+- Intelligent tiering has a monthly "automation and monitoring" cost
+
+## Cloudfront
+
+- Distributions are Web and RTMP (streaming media)
+- Cloudfront origin server MUST be publicly accessible
+- OAI == Origin Access **Identity** | Identifier
+	+ CF Distribution presents an OAI
+	+ Bucket policy update to allow access only with this OAI
+	+ Only application where the origin is S3 (not for EC2 or on-prem)
+
+## EFS
+
+- Tied to a VPC
+- Only one mount target per AZ
+- Performance modes are "General Purpose" and "Max I/O"
+- Throughput modes are "Bursting" and "Provisioned" aka Throughput mode
+- `yum install amazon-efs-utils` (will work without, but gives "tighter integration")
+	+ You can use a filesystem type `efs`
+	+ You can use the ""File System ID" as the hostname portion in the mount statement
+- By default the mounted filesystem is only writeable by root
+
+
+
+# Integrations
+
+## DAX (DynameDB Accelerator)
+
+- In memory cacheing, eventually consistent NOT strongly consistent
+- Has an *item cache* and a *query cache*
+
+## Elasticache
+
+- `redis` or `memcached`
+- often used for storing session state
+
+## Snowball
+
+### Snowball
+
+- Storage only
+- Transfer data in using EITHER
+	+ Snowball client (on your client machine)
+	+ S3 gateways - installed on the SB makes it an S3 device
+	+ As standard 80TB of raw storage, 72TB useable
+
+### Snowball Edge
+
+- Storage and compute
+- Snowball edge can present NFS as well as S3
+
+### Snowmobile
+
+- uneconomic below 10PB, can go up to 100PB
+
+## Storage Gateway
+
+- It's a virtual appliance - e.g. a VMware appliance
+- Three flavours
+	+ File Gateway - presents SMB shares
+	+ Volume Gateway - presents iSCSI volumes
+		* Can snapshot a volume and present it as EBS
+		* You could present volumes inside EC2 as iSCSI for DR
+		* Gateway stored volumes are on the GW and snapshotted to S3
+		* Gateway cached volumes - primary copy in S3, cached bits in SGW
+	+ Virtual Tape Library
+		* Move tapes to a "shelf" which is a S3 storage class
+
+
+## Database migration service
+
+- Adds a replication instance twixt source and target
+	+ This allows schema conversion
+	+ Also useful for peeling off part of a schema
+
+
+## VPNs
+
+- Customer Gateway is the device on your premises
+- Virtual Private Gateway is attached to a VPC
+- Can use either static routeing or BGP	
+	+ Resilient connection (2×CGW, 2×tunnel endpoint) REQUIRES BGP
+	+ Set up routes both in home router AND aws route tables
+- Routeing hierarchy of preference:
+	+ local routes (even over a more specific static route)
+	+ static routes take preference over dynamic (propagated) routes
+	+ dynamic routes learned from Direct Connect
+	+ static routes from VPN
+	+ dynamic routes learned from VPN
+
+## Direct Connect
+
+- Put your equipment in a DX location, and connect with a Letter Of Authorisation
+- DX location terminates at public services and at a VGW in a VPC
+- Run multiple VIFs (Virtual Interfaces) on top of the DX connection
+- DX is either 1Gb/s or 10Gb/s
+- Latency for DX is consistently low
+- DX is NOT encrypted
+- DX is NOT HA
+- Often a VPN provisioned while waiting for DX, then it becomes failover
