@@ -16,7 +16,7 @@ Snapshots are encrypted or unencrypted depending on volume status
 - X-Forwarded-For give the true source IP
 - 504 error means origin server not responding
 
-## R53
+## Route 53
 *Alias* records typically used to map zone apex  
 
 ## RDS
@@ -56,6 +56,15 @@ Elasticache - Redis
 - Allows Multi-AZ and persisted
 
 ## Parameter Store
+
+
+# S3
+Max file size is 5TB  
+
+URL Format:
+`https://<bucket-name>.s3.<region>.amazonaws.com/<object-name>`
+
+There's now Glacier and "Glacier Deep Archive"
 
 
 # Serverless
