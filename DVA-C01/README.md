@@ -48,7 +48,7 @@ Read Replica
 Elasticache - Memcached
 - Simpler
 - No persistence or multi-AZ
-- No dataatyping or sorting
+- No data typing or sorting
 
 Elasticache - Redis
 - Allows lists, hashes and data typing
@@ -91,3 +91,55 @@ Copious logging
 X-Ray daemon must be installed on EC2 instance and SDK must be used  
 In ECS, X-ray daemon should be in a different container  
 X-Ray annotations are KV pairs to spoon feed values.
+
+# DynamoDB
+Document and KV: JSON, HTML, XML  
+Does offer a strongly consistent version with ACID sa well as eventually consistent  
+Tables, items (rows), attributes (columns)  
+Primary Key: partition key; composite key (partition key + sort key, e.g. User ID + message id)
+
+IAM: there's a condition `dynamodb:LeadingKeys` - allows access to items where partition key matches the user's `User_ID`  
+
+Local Secondary Index
+- Same partition key, different sort key
+- Most be created when table created
+
+Global Seconday Index
+- Different partition key and sort key to table
+- Can be created at any time
+- initial quota of 20 per table, support ticket to increase
+
+Query
+- Find items in table using primary key
+- Results sorted by primary key
+- set `Scan IndexForward` to FALSE for reverse ordering
+
+Scan
+- scans every table item
+- returns all attributes by default
+- `ProjectionExpression` refines results
+  - Make scan more efficient by seting smaller page size
+  - Isolate scans to specific tables
+  - Parallel scans (for table bigger than 20GB)
+  - *Don't use scan!* - prefer `Query`, `Get` or `BatchGetItem` APIs
+
+## Throughput
+Capacity Units
+- Write Capacity Unit = 1× 1KB/s
+- Strongly Consistent Read = 1× 4KB/s
+- Eventually Consistent Read (default) = 2× 4KB reads per second
+
+On-Demand Capacity available, but provisioned enables cost control
+Provisioned throughput limits can be raised by a support ticket
+Use exponential backoff client side, especially if client is AWS service.
+
+## DAX
+Improves resonse for eventually consistent reads only  
+Point API calls at DAX explicitly  
+
+## TTL
+Good for session data, etc
+
+## DynamoDB Streams
+24 hours only  
+Good Lambda Event Source  
