@@ -143,3 +143,85 @@ Good for session data, etc
 ## DynamoDB Streams
 24 hours only  
 Good Lambda Event Source  
+
+# KMS
+## CMK Customer Master Key
+- Can add an alias for easy reference
+- Has a state (enabled, pending deletion, etc)
+- Key material either your own or AWS provided
+- Cannot export
+- Limited to 4KB of payload (typically a session key/data key)
+- AWS Managed is the keys automatically created for e.g. S3. Cannot be used by the customer
+- Keys are region specific
+
+## KMS
+- `aws kms encrypt|decrypt|re-encrypt|enable-key-rotation|generate-data-key`
+- KMS is multi-tenant, CloudHSM uses dedicated hardware
+
+# Other Services
+## SQS
+- Standard and FIFO
+- Standard: Default; unordered; may duplicate; "delivered at least once"
+- FIFO: Strict ordering; delivered once
+- Visibility Timeout: default 30s; max 12 hours `ChangeMessageVisibility`
+- Retention Period: default 4d; min 1min, max 14d
+- Short Polling returns and bills; Long Polling returns on message or timeout
+- Delay Queue: invisible for up to 900s
+- Large SQS is >256KB; <2GB - stores in S3, need *SDK for Java* and *SQS Extended Client Library for Java*
+
+## SNS
+
+## Kinesis
+- Streams (real time); Firehose (near real time); Analytics
+- Streams made of Shards (capacity unit); client should have a (or less than one) processor per shard
+
+## Elastic Beanstalk
+- Java, PHP, Python, Ruby, Go, Docker, .NET, Node.js
+- Apache, Tomcat, Passenfer, Puma, Nginx, IIS
+- Provisions EC2, RDS, S3, ELB, ASG et al
+- YAML or JSON config file, `<filename>.config`, `.ebextensions/` folder at top level of bundle
+- Deployment types: All at Once (interruption); Rolling; Rolling with Additional Batch; Immutable (full deployment and redirect); Traffic Splitting (for canary testing)
+- RDS: Inside EBS for dev/test (destroyed at EB teardown); Outside EBS needs security config and connect strings
+
+
+# Monitoring
+- Cloudwatch agent for OS stuff
+- Cloudwatch; CW Alarms; CW Logs
+- Cloudtrail records AWS API calls
+- Cloudwatch=Performance, Cloudtrail=Audit
+
+# Developer
+- Continuous Integration - CodeCommit
+- Continuous Delivery - CodeBuild, CodeDeploy
+- Continuous Deployment - CodePipeline
+
+## CodeDeploy
+- Deployments either: In-Place (Rolling Restart); Blue/Green
+
+
+`appspec.yml` in YAML (unless deploying to Lambda, json is then permissible)
+Folder setup
+- `apppspec.yml` - always in root directory of revision
+- `/Scripts`
+- `/Config`
+- `/Source`
+
+Lifecycle event hooks run in the *Run Order*
+- Phase 1 Deregister from LB
+  -  `BeforeBlockTraffic`
+  -  `BlockTraffic`
+  -  `AfterBlockTraffic`
+- Phase 2 Deployment
+  - `ApplicationStop`
+  - `DownloadBundle`
+  - `BeforeInstall`
+  - `Install`
+  - `AfterInstall`
+  - `ApplicationStart`
+  - `ValidateService`
+- Phase 3 Reregister with LB
+  - `BeforeAllowTraffic`
+  - `AllowTraffic`
+  - `AfterAllowTraffic`
+
+
