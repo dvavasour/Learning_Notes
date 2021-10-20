@@ -2,6 +2,8 @@
 ## AWS Inspector
 Freestanding service that runs across a VPC and creates a report on what's open and accessible
 
+IAM Policy Simulator show which policies allowed or denied actions.
+
 # EC2
 ## EBS
 There's gp2 (up to 16,000 IOPS per volume), io1 (50 IOPS/GB up to 64,000 per volume) and the new io2 (500 IOPS/GB up to 64,000 per volume and 99.999% durability) for SSD  
@@ -15,6 +17,8 @@ Snapshots are encrypted or unencrypted depending on volume status
 - Gateway Load Balancers (for 3rd party appliances)  
 - X-Forwarded-For give the true source IP
 - 504 error means origin server not responding
+
+Can have a secure listener on ELB using secure port on EC2 where the SSL is terminated.
 
 ## Route 53
 *Alias* records typically used to map zone apex  
@@ -56,6 +60,8 @@ Elasticache - Redis
 - Allows Multi-AZ and persisted
 
 ## Parameter Store
+- Can be hierarchical
+- Secrets Manager fosts money and provides secret rotation, Paramater store is free and doesn't
 
 
 # S3
@@ -65,6 +71,8 @@ URL Format:
 `https://<bucket-name>.s3.<region>.amazonaws.com/<object-name>`
 
 There's now Glacier and "Glacier Deep Archive"
+Cloudfront has signed URLs
+To force https on Cloudfront, use `Viewer Protocol Policy`
 
 
 # Serverless
@@ -74,15 +82,22 @@ Services that can invoke Lambda:
 
 1,000 concurrent executions per second  
 http 429 is limit exceded  
+Capacity is scaled from memory size
 Allow Lambda to access resources in a VPC:
-- Uses an elastic IP
+- Uses an elastic IP (function execution role must haver ENI permissions)
 - Security group is allocated to the function
+- Put connect strings in the function
 
 ## API Gateway
 10,000 requests per second, 5,000 concurrent requests *per region*  
 Default cacheing is 300 seconds
 Import APIs using OpenAPI (Swagger)  
 SOAP is passthrough, API can convert XML response to JSON  
+To defeat cacheing, need to:
+- `Cache-Control: max-age=0` http header
+- Sign to show permission
+
+General Rule: 4XX errors are client side, 5XX errors are server side
 
 ## Step Functions
 Copious logging
@@ -94,7 +109,7 @@ X-Ray annotations are KV pairs to spoon feed values.
 
 # DynamoDB
 Document and KV: JSON, HTML, XML  
-Does offer a strongly consistent version with ACID sa well as eventually consistent  
+Does offer a strongly consistent version with ACID as well as eventually consistent `TransactWriteItems`  
 Tables, items (rows), attributes (columns)  
 Primary Key: partition key; composite key (partition key + sort key, e.g. User ID + message id)
 
@@ -106,6 +121,7 @@ Local Secondary Index
 
 Global Seconday Index
 - Different partition key and sort key to table
+- If you're going to use a low cardinality sort key, create a random high cardinality partition key
 - Can be created at any time
 - initial quota of 20 per table, support ticket to increase
 
@@ -164,7 +180,7 @@ Good Lambda Event Source
 - Standard: Default; unordered; may duplicate; "delivered at least once"
 - FIFO: Strict ordering; delivered once
 - Visibility Timeout: default 30s; max 12 hours `ChangeMessageVisibility`
-- Retention Period: default 4d; min 1min, max 14d
+- Retention Period: default 4d; min 1min, max 14d `SetQueueAttributes`
 - Short Polling returns and bills; Long Polling returns on message or timeout
 - Delay Queue: invisible for up to 900s
 - Large SQS is >256KB; <2GB - stores in S3, need *SDK for Java* and *SQS Extended Client Library for Java*
@@ -189,6 +205,8 @@ Good Lambda Event Source
 - Cloudwatch; CW Alarms; CW Logs
 - Cloudtrail records AWS API calls
 - Cloudwatch=Performance, Cloudtrail=Audit
+
+Cloudwatch alarm statuses: `OK`, `ALARM`, `INSUFFICIENT_DATA` (i.e. unknown)
 
 # Developer
 - Continuous Integration - CodeCommit
