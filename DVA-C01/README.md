@@ -224,4 +224,53 @@ Lifecycle event hooks run in the *Run Order*
   - `AllowTraffic`
   - `AfterAllowTraffic`
 
+## Codepipeline
+- CI/CD Service
+- Can be configured to trigger automatically on source code change
+- Integrates with AWS & 3rd party tools (github, Jenkins)
 
+## ECS
+- Docker or Windows Containers
+- Deploy to either **EC2 Cluster** or **Fargate** for serverless
+- EC2 gives more control
+- Images go in Elastic Container Registry
+
+## Docker and Elastic Beanstalk
+- Use EB to deploy container to single EC2 instance
+- or multiple Docker instances to a EC2 cluster
+- Deploy application by uploading code bundle to EB (and update with new code version)
+
+## Cloudformation
+- YAML or JSON
+- Sections: Version, Description, Metadata, Parameters, Conditions (incl Mappings), Transform (e.g. Include), Resources, Outputs
+- Only required section is Resources
+
+SAM is a CF extension for Serverless with a simplified syntax
+- `sam package` - mushes the CF YAML
+- `sam deploy`
+- sam is a separate CLI
+- YAML file includes a `Transform:` clause telling CF it's a server less deployment
+
+CF Nested Stacks allow code re-use
+
+# Advanced IAM
+## Web Identity Federation
+- Cognito is identity broker twixt IAM and Google, FB, etc giving temporary credentials
+- Temp credentials map to IAM role
+- User Pools, Sign-in, Identity Pools
+- User Pool manages interface to (e.g.) FB, which provides a JWT token
+- Identity Pool swaps this for AWS Credentials which map to IAM role
+- **Push Synchronisation** synchronises between devices (SNS under the bonnet)
+
+## Policies
+- AWS Managed Policies (can't be changed)
+- Customer Managed Policies (use just in your account, can copy AWS managed policy)
+- Inline Policy: 1:1 Relationship with entity it's attached to.
+
+## AssumeRoleWithWebIdentity
+- Security Token Service API Call
+- For use where you can't use Cognito
+- Temporary Credentials - default timeout = 1 hour
+
+## Cross-Account Access
+- 
