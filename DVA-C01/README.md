@@ -53,6 +53,7 @@ Elasticache - Memcached
 - Simpler
 - No persistence or multi-AZ
 - No data typing or sorting
+- *lazy loading* = check the cache, then access origin if cache miss
 
 Elasticache - Redis
 - Allows lists, hashes and data typing
@@ -88,6 +89,8 @@ Allow Lambda to access resources in a VPC:
 - Security group is allocated to the function
 - Put connect strings in the function
 
+There's a package size limit. Get round this using layers, a `.zip` file containing extra stuff. 
+
 ## API Gateway
 10,000 requests per second, 5,000 concurrent requests *per region*  
 Default cacheing is 300 seconds
@@ -98,6 +101,8 @@ To defeat cacheing, need to:
 - Sign to show permission
 
 General Rule: 4XX errors are client side, 5XX errors are server side
+WebSocket API allows 2-way communication, not just the REST request->reply
+*Stage Variables* can be used to allow a single API gateway to be used for different contexts (e.g. prod, dev)
 
 ## Step Functions
 Copious logging
@@ -106,6 +111,9 @@ Copious logging
 X-Ray daemon must be installed on EC2 instance and SDK must be used  
 In ECS, X-ray daemon should be in a different container  
 X-Ray annotations are KV pairs to spoon feed values.
+
+## Other
+AWS AppSync is a thing. https://aws.amazon.com/appsync/
 
 # DynamoDB
 Document and KV: JSON, HTML, XML  
@@ -207,6 +215,7 @@ Good Lambda Event Source
 - Cloudwatch=Performance, Cloudtrail=Audit
 
 Cloudwatch alarm statuses: `OK`, `ALARM`, `INSUFFICIENT_DATA` (i.e. unknown)
+CloudWatch Agent will scrape logfiles inside instances
 
 # Developer
 - Continuous Integration - CodeCommit
