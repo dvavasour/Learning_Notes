@@ -66,14 +66,15 @@ Elasticache - Redis
 
 
 # S3
-Max file size is 5TB  
+Max object size is 5TB  
 
 URL Format:
 `https://<bucket-name>.s3.<region>.amazonaws.com/<object-name>`
 
 There's now Glacier and "Glacier Deep Archive"
 Cloudfront has signed URLs
-To force https on Cloudfront, use `Viewer Protocol Policy`
+To force https on Cloudfront, use `Viewer Protocol Policy`  
+Use Multipart Upload for files bigger than 100MB
 
 
 # Serverless
@@ -263,6 +264,7 @@ Lifecycle event hooks run in the *Run Order*
 - Deploy to either **EC2 Cluster** or **Fargate** for serverless
 - EC2 gives more control
 - Images go in Elastic Container Registry
+- Execution role is attached to the ECS Task
 
 ## Docker and Elastic Beanstalk
 - Use EB to deploy container to single EC2 instance
@@ -274,6 +276,7 @@ Lifecycle event hooks run in the *Run Order*
 - Sections: Version, Description, Metadata, Parameters, Conditions (incl Mappings), Transform (e.g. Include), Resources, Outputs
 - Only required section is Resources
 - Set `DeletionPolicy` to `Retain` to keep resources after stack deletion
+- `Fn::GetAtt` returns a resource's attribute
 
 ## SAM is a CF extension for Serverless with a simplified syntax
 - `sam package` - mushes the CF YAML
