@@ -2,7 +2,7 @@
 ## AWS Inspector
 Freestanding service that runs across a VPC and creates a report on what's open and accessible
 
-IAM Policy Simulator show which policies allowed or denied actions.
+*IAM Policy Simulator* show which policies allowed or denied actions.
 
 # EC2
 ## EBS
@@ -82,6 +82,7 @@ Services that can invoke Lambda:
 - DynamoDB, Kinesis, SQS, SNS, SES, API Gateway and others.
 
 1,000 concurrent executions per second  
+Maximum execution duration for request is 900 seconds
 http 429 is limit exceded  
 Capacity is scaled from memory size
 Allow Lambda to access resources in a VPC:
@@ -119,7 +120,8 @@ AWS AppSync is a thing. https://aws.amazon.com/appsync/
 Document and KV: JSON, HTML, XML  
 Does offer a strongly consistent version with ACID as well as eventually consistent `TransactWriteItems`  
 Tables, items (rows), attributes (columns)  
-Primary Key: partition key; composite key (partition key + sort key, e.g. User ID + message id)
+Primary Key: partition key; composite key (partition key + sort key, e.g. User ID + message id)  
+Maximum item size is 400KB
 
 IAM: there's a condition `dynamodb:LeadingKeys` - allows access to items where partition key matches the user's `User_ID`  
 
@@ -271,8 +273,9 @@ Lifecycle event hooks run in the *Run Order*
 - YAML or JSON
 - Sections: Version, Description, Metadata, Parameters, Conditions (incl Mappings), Transform (e.g. Include), Resources, Outputs
 - Only required section is Resources
+- Set `DeletionPolicy` to `Retain` to keep resources after stack deletion
 
-SAM is a CF extension for Serverless with a simplified syntax
+## SAM is a CF extension for Serverless with a simplified syntax
 - `sam package` - mushes the CF YAML
 - `sam deploy`
 - sam is a separate CLI
@@ -283,6 +286,7 @@ CF Nested Stacks allow code re-use
 # Advanced IAM
 ## Web Identity Federation
 - Cognito is identity broker twixt IAM and Google, FB, etc giving temporary credentials
+- User authenticates with external service first
 - Temp credentials map to IAM role
 - User Pools, Sign-in, Identity Pools
 - User Pool manages interface to (e.g.) FB, which provides a JWT token
