@@ -201,6 +201,7 @@ Good Lambda Event Source
 ## Kinesis
 - Streams (real time); Firehose (near real time); Analytics
 - Streams made of Shards (capacity unit); client should have a (or less than one) processor per shard
+- Events are given a sequence number on being written. This can be used for consumption.
 
 ## Elastic Beanstalk
 - Java, PHP, Python, Ruby, Go, Docker, .NET, Node.js
@@ -216,6 +217,7 @@ Good Lambda Event Source
 - Cloudwatch; CW Alarms; CW Logs
 - Cloudtrail records AWS API calls
 - Cloudwatch=Performance, Cloudtrail=Audit
+- Cloudwatch Detailed Monitoring is every minute. Less needs a custom metric.
 
 Cloudwatch alarm statuses: `OK`, `ALARM`, `INSUFFICIENT_DATA` (i.e. unknown)
 CloudWatch Agent will scrape logfiles inside instances
