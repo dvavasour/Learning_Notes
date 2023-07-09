@@ -25,17 +25,23 @@ For parts of access management
 - Performance Efficiency
 - Cost Optimisation
 
-# IAM Limits
+
+# IAM
+
+Groups are not identities: so cannot be reference as a principal.
+## IAM Limits
 
 - 5000 users per account
 - 10 groups per user
 - 10 managed policies per user
 - 2048 characters for all the inline policies for a user!
-- 2 Access keys for a user (uncluding inactive ones0
+- 2 Access keys for a user (uncluding inactive ones)
+- 300 groups per account (can be increased with ticket)
 
-)
 
 # Organizations
+
+Master Account -> _Management Account_
 
 - The master account cannot be restricted in any way
 - Service Control Policies can be applied to organisation root, and OU or an account
