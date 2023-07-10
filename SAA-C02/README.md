@@ -45,6 +45,7 @@ Master Account -> _Management Account_
 
 - The master account cannot be restricted in any way
 - Service Control Policies can be applied to organisation root, and OU or an account
+- SCPs are permission boundaries, and don't grant anything
 
 # EC2
 ## Instance Families
